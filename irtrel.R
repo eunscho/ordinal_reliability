@@ -48,7 +48,7 @@ irtrel <- function(data, logistic = T, package = "ltm", estimator = "DWLS") {
     }
     if (package == "ltm") {
       if (K == 2) {
-        result <- ltm(data ~ z1, IRT.param = TRUE)
+        result <- ltm(data ~ z1, IRT.param = FALSE)
         error <- NULL
         irtout <- list(result = result, error = error)
         # safeirt <- purrr::safely(ltm)
@@ -56,7 +56,7 @@ irtrel <- function(data, logistic = T, package = "ltm", estimator = "DWLS") {
         
       } else {
         safeirt <- purrr::safely(grm)
-        irtout <- safeirt(data)
+        irtout <- safeirt(data, IRT.param = FALSE)
       }
     } else {
       safeirt <- purrr::safely(mirt)
@@ -75,7 +75,7 @@ irtrel <- function(data, logistic = T, package = "ltm", estimator = "DWLS") {
         if (K == 2) {
           irtcoef <- coef(irtout$result)
           as <- irtcoef[, 2] / D
-          bs <- irtcoef[, 1] / D
+          bs <- -irtcoef[, 1] / D
           # for (i in 1:J) {
           #   as[i] <- irtcoef[2 + 2 * (i - 1)] / D
           #   bs[i] <- irtcoef[1 + 2 * (i - 1)] / D
